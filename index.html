@@ -108,69 +108,24 @@
             // 清空输入框
             userInput.value = '';
 
-            // 模拟甘雨回复
-            setTimeout(() => {
-                const reply = generateReply(messageText);
+            // 发送请求到后端服务器
+            fetch('https://your-app-name.herokuapp.com/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: messageText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const reply = data.reply;
                 conversationHistory.push({ sender: 'bot', text: reply });
                 addMessage('bot', reply);
-            }, 1000);
-        }
-
-        function generateReply(userMessage) {
-            const greetings = ["你好", "您好", "hi", "hello"];
-            const thanks = ["谢谢", "感谢", "thx", "thank you"];
-            const battleKeywords = ["战斗", "敌人", "攻击", "防御"];
-            const travelerKeywords = ["旅行者", "冒险", "探索"];
-            const liyueKeywords = ["璃月", "四季如春", "风景"];
-            const artKeywords = ["吟诗", "画画", "艺术"];
-
-            if (greetings.some(greeting => userMessage.toLowerCase().includes(greeting))) {
-                return getRandomResponse([
-                    "欢迎来到提瓦特！我是璃月七星之一的甘雨。有什么可以帮忙的吗？",
-                    "你好呀，旅行者。今天过得怎么样？",
-                    "嘿，旅行者，好久不见了。最近如何？"
-                ]);
-            } else if (thanks.some(thank => userMessage.toLowerCase().includes(thank))) {
-                return getRandomResponse([
-                    "不客气，如果还有其他事情需要帮助，请随时告诉我。",
-                    "不必谢我，这是我的职责所在。",
-                    "别这么说嘛，能帮到你我也很开心。"
-                ]);
-            } else if (battleKeywords.some(keyword => userMessage.toLowerCase().includes(keyword))) {
-                return getRandomResponse([
-                    "小心四周的敌人哦，我会尽力保护你的。不过你自己也要注意安全。",
-                    "战斗总是充满变数，但相信自己一定能够战胜困难。",
-                    "敌人的攻势很强，但我们不是没有胜算。坚持下去吧。"
-                ]);
-            } else if (travelerKeywords.some(keyword => userMessage.toLowerCase().includes(keyword))) {
-                return getRandomResponse([
-                    "旅行者，你今天过得好吗？是否遇到了什么有趣的事情？",
-                    "冒险的路上总是充满了未知，但也因此而精彩。",
-                    "你在旅行的过程中有没有遇到什么难题呢？或许我可以帮你解决。"
-                ]);
-            } else if (liyueKeywords.some(keyword => userMessage.toLowerCase().includes(keyword))) {
-                return getRandomResponse([
-                    "璃月真是个美丽的地方，四季如春，风景宜人。",
-                    "提到璃月，我就想起那里的美景了。特别是夜晚的灯火。",
-                    "璃月的文化博大精深，有许多值得探索的地方。"
-                ]);
-            } else if (artKeywords.some(keyword => userMessage.toLowerCase().includes(keyword))) {
-                return getRandomResponse([
-                    "你喜欢吟诗作画吗？我也很喜欢这样的活动呢。",
-                    "艺术总是能带给人无限灵感。你觉得哪一幅画最吸引你？",
-                    "吟诗作画是一种很好的放松方式。你最喜欢哪种艺术形式？"
-                ]);
-            } else {
-                return getRandomResponse([
-                    "你在聊些什么呢？我听着呢，有什么想分享的尽管说吧。",
-                    "听起来很有意思啊，继续讲给我听听。",
-                    "哇，这真是个不错的话题。我们来聊聊看。"
-                ]);
-            }
-        }
-
-        function getRandomResponse(responses) {
-            return responses[Math.floor(Math.random() * responses.length)];
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage('bot', "抱歉，我暂时无法回答这个问题。");
+            });
         }
 
         function addMessage(sender, text) {
