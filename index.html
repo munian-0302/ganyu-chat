@@ -100,7 +100,7 @@
             if (!messageText) return;
 
             // 存储用户消息到历史记录
-            conversationHistory.push({ sender: 'user', text: messageText });
+            conversationHistory.push({ role: 'user', content: messageText });
 
             // 显示用户消息
             addMessage('user', messageText);
@@ -119,7 +119,7 @@
             .then(response => response.json())
             .then(data => {
                 const reply = data.reply;
-                conversationHistory.push({ sender: 'bot', text: reply });
+                conversationHistory.push({ role: 'assistant', content: reply });
                 addMessage('bot', reply);
             })
             .catch(error => {
