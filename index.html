@@ -92,7 +92,9 @@
     </div>
 
     <script>
-        let conversationHistory = [];
+        let conversationHistory = [
+            { role: 'system', content: "你好，我是璃月七星之一的甘雨。有什么可以帮忙的吗？" }
+        ];
 
         function sendMessage() {
             const userInput = document.getElementById('userInput');
@@ -114,12 +116,12 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: messageText })
+                body: JSON.stringify({ message: messageText, conversationHistory })
             })
             .then(response => response.json())
             .then(data => {
                 const reply = data.reply;
-                conversationHistory.push({ role: 'assistant', content: reply });
+                conversationHistory = data.conversationHistory; // 更新对话历史
                 addMessage('bot', reply);
             })
             .catch(error => {
